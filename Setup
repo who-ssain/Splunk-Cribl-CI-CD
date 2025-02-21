@@ -1,0 +1,27 @@
+## Setup Instructions
+### 1. Clone Repository
+```sh
+git clone https://github.com/yourusername/splunk-cribl-ci-cd.git
+cd splunk-cribl-ci-cd
+```
+
+### 2. Configure Secrets
+- In GitHub, navigate to **Settings > Secrets and variables > Actions**.
+- Add a new secret `CRIBL_TOKEN` with your API token.
+
+### 3. Deploy Cribl Pipelines
+- Push changes to `cribl-pipelines/` to trigger the workflow.
+- Alternatively, run manually from the **Actions** tab.
+
+### 4. Verify Deployment
+- Check the GitHub Actions logs.
+- Use `curl` to validate deployments:  
+```sh
+curl -s -X GET "https://cribl.example.com/api/v1/pipelines" \
+  -H "Authorization: Bearer YOUR_TOKEN" | jq .
+```
+
+## Future Enhancements
+- Automate Terraform deployment of AWS CloudWatch sources.
+- Extend to deploy Splunk configurations automatically.
+- Implement rollback in case of failed deployments.

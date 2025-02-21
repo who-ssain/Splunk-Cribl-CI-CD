@@ -1,0 +1,30 @@
+{
+    "id": "sample_pipeline",
+    "name": "Sample Pipeline",
+    "nodes": [
+      {
+        "id": "input",
+        "type": "Source",
+        "config": {
+          "inputType": "http"
+        }
+      },
+      {
+        "id": "filter",
+        "type": "Grok",
+        "config": {
+          "pattern": "%{COMBINEDAPACHELOG}"
+        }
+      },
+      {
+        "id": "output",
+        "type": "SplunkHEC",
+        "config": {
+          "hecURL": "https://splunk.example.com:8088",
+          "token": "YOUR_SPLUNK_TOKEN",
+          "index": "main"
+        }
+      }
+    ]
+  }
+  

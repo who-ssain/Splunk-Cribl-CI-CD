@@ -1,0 +1,46 @@
+```yaml
+name: Deploy Cribl Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'cribl-pipelines/**'
+  workflow_dispatch:
+
+env:
+  CRIBL_API_URL: "https://cribl.example.com/api/v1"
+  CRIBL_TOKEN: "${{ secrets.CRIBL_TOKEN }}"
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install jq (for JSON parsing)
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Deploy Cribl Pipelines
+        run: |
+          for pipeline in cribl-pipelines/*.json; do
+            echo "Deploying $pipeline to Cribl"
+            RESPONSE=$(curl -s -X POST "$CRIBL_API_URL/pipelines" \
+              -H "Authorization: Bearer $CRIBL_TOKEN" \
+              -H "Content-Type: application/json" \
+              --data @"$pipeline")
+            echo "Response: $RESPONSE"
+          done
+
+      - name: Verify Deployment
+        run: |
+          echo "Fetching deployed pipelines..."
+          curl -s -X GET "$CRIBL_API_URL/pipelines" \
+            -H "Authorization: Bearer $CRIBL_TOKEN" | jq .
+```
